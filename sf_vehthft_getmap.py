@@ -6,7 +6,7 @@ from folium import plugins
 
 def get_map(response):
     #initiate the base plot
-    folmap = folium.Map([float(response['Latitude']), float(response['Longitude'])], zoom_start=16, width='75%', height='75%')
+    folmap = folium.Map([float(response['Latitude']), float(response['Longitude'])], zoom_start=16, width='90%', height='90%')
     folium.Marker(
             location=[float(response['Latitude']), float(response['Longitude'])],
             popup=folium.Popup(html="Risk Score: %s <br> Risk Level: %s <br> Risk Score in 3 Hours: %s <br> Risk Level in 3 Hours: %s" 
