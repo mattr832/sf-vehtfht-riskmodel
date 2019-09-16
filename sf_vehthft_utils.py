@@ -132,8 +132,8 @@ def get_risk(sample):
 #                'DOW': dayoweek,
                '3+ Hour Risk Score': score2,
                '3+ Hour Risk Level': x2,
-               'Latitude': lat,
-               'Longitude': long,
+            #    'Latitude': lat,
+            #    'Longitude': long,
 #                'FHour': newhour,
 #                'FDOW': day
               }
