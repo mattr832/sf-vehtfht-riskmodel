@@ -127,7 +127,7 @@ def get_risk(sample):
     else:
         x2 = 'Very Low'
         
-    reponse = {'Risk Score': score, 
+    response = {'Risk Score': score, 
                'Risk Level': x,
 #                'Hour': hour,
 #                'DOW': dayoweek,
@@ -139,5 +139,5 @@ def get_risk(sample):
 #                'FHour': newhour,
 #                'FDOW': day
               }
-    return reponse
+    return response
 
