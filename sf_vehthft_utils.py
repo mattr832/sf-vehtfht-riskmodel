@@ -8,6 +8,7 @@ from sf_vehthft_helperfuns import *
 
 def get_risk(sample):
     # extract time related features for model
+    datetime = sample['Time']
     hour = get_hour(sample['Time'])
     dayoweek = get_dow(sample['Time'])
     fdayoweek = get_fdow(sample['Time'])
@@ -132,6 +133,7 @@ def get_risk(sample):
 #                'DOW': dayoweek,
                '3+ Hour Risk Score': score2,
                '3+ Hour Risk Level': x2,
+               'DateTime': datetime,
                'Latitude': lat,
                'Longitude': long,
 #                'FHour': newhour,
