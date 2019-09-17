@@ -74,7 +74,7 @@ def result():
 # Start the server, continuously listen to requests.
 if __name__=="__main__":
     # For local development, set to True:
-    app.run(debug=True)
+    # app.run(debug=True)
     # For public web serving:
-    # app.run(host='97.113.5.182')
+    app.run(host='97.113.5.182')
     app.run()
