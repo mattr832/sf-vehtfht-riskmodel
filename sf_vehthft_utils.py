@@ -18,8 +18,6 @@ def get_risk(sample):
     # get coordinates from json and convert to df for feeding to model
     df = pd.DataFrame(sample, index=[0])
     df = df[['Latitude','Longitude']]
-    df['Latitude'] = df['Latitude'].astype('float64')
-    df['Longitude'] = df['Longitude'].astype('float64')
   
     # load the label encoders from disk
     pdistrict_labenc = pickle.load(open('pdistrict_labenc.pkl', 'rb'))
@@ -42,7 +40,7 @@ def get_risk(sample):
     # convert predictions to preprocessed labels
     pdistrict = pdistrict_labenc.inverse_transform(pdresult)
     sdistrict = sdistrict_labenc.inverse_transform(sdresult)
-    hood = hood_labenc.inverse_transform(sdresult)
+    hood = hood_labenc.inverse_transform(hresult)
     inter = inter_labenc.inverse_transform(iresult)
 
     # get mappings from dics in helper_funs
