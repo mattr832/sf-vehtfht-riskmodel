@@ -1,29 +1,22 @@
 #importing libraries
 import os
+import json
 import flask
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from sf_vehthft_utils import *
-from sf_vehthft_getmap import *
 
 #creating instance of the class
 app=flask.Flask(__name__)
 
-#to tell flask what url should trigger the function index()
-@app.route('/')
-@app.route('/index')
-def index():
-    return flask.render_template('index.html')
     
-@app.route('/result',methods = ['POST'])
+@app.route('/',methods = ['POST'])
 def result():
     if request.method == 'POST':
-        to_predict_list = request.form.to_dict()
+        to_predict_list = request.get_json()
         #run the get_risk function from the utils module
         response = get_risk(to_predict_list)
-        #get map with marker html and save into the templates folder
-        get_map(response)
         #return the result
-        return render_template("result.html", response=response)
+        return jsonify(response)
     
 # Start the server, continuously listen to requests.
 if __name__=="__main__":
