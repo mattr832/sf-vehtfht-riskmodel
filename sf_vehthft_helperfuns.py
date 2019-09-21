@@ -6,6 +6,36 @@ import pandas as pd
 from datetime import datetime
 import calendar
 
+
+#create function to get the day of the week from datetime
+def get_dow(x):
+    dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+    return calendar.day_name[dt.weekday()]
+
+def get_fdow(x):
+    dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+    return calendar.day_name[dt.weekday() + 1]
+
+
+#create function to get hour from the datetime
+def get_hour(x):
+    dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
+    return dt.hour
+
+#create function to check that lat and long are within bounds
+def check_lat(x):   
+    if x < 37.811 and x > 37.69:
+        return 1
+    else:
+        return 0
+
+def check_long(x):   
+    if x > -122.515 and x < -122.385:
+        return 1
+    else:
+        return 0
+    
+
 #declare variables for model and categorical variables for one hot encoding
 variables = ['Incident_Hour',
              'Incident_Day_of_Week',
@@ -122,20 +152,6 @@ features = ['Inter_TE',
              'Supervisor_District_8.0',
              'Supervisor_District_9.0']
 
-#create function to get the day of the week from datetime
-def get_dow(x):
-    dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
-    return calendar.day_name[dt.weekday()]
-
-def get_fdow(x):
-    dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
-    return calendar.day_name[dt.weekday() + 1]
-
-
-#create function to get hour from the datetime
-def get_hour(x):
-    dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
-    return dt.hour
 
 probs = [8.56693328e-02, 2.92056559e-02, 4.86401457e-01, 6.51215790e-02,
        1.78710877e-01, 5.34694912e-02, 7.60012451e-01, 2.93961471e-01,
