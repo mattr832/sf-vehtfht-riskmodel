@@ -23,7 +23,7 @@ def run_constraints(jsondata):
 def result():
     if request.method == 'POST':
         #get current datetime from POST request
-        currentDT = datetime.now().replace(microsecond=0)
+        currentDT = datetime.now(tz=pytz.utc).replace(microsecond=0)
         currentDT = currentDT.astimezone(timezone('US/Pacific'))
         cdt = str(currentDT)
         #get paramters from URL request
