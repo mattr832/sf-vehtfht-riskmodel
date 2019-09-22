@@ -1,6 +1,7 @@
 #importing libraries
 import os
 import json
+import datetime
 import flask
 from flask import Flask, render_template, request, jsonify
 from sf_vehthft_utils import *
@@ -19,7 +20,14 @@ def run_constraints(jsondata):
 @app.route('/',methods = ['POST'])
 def result():
     if request.method == 'POST':
-        to_predict_list = request.get_json()
+        #get current datetime from POST request
+        currentDT = datetime.now().replace(microsecond=0)
+        cdt = str(currentDT)
+        #get paramters from URL request
+        lat = float(request.args.get('Latitude'))
+        long = float(request.args.get('Longitude'))
+        #create dictionary
+        to_predict_list = {'Latitude': lat, 'Longitude': long, 'Time': cdt}
         #run lat long checks, return message if they fail, else get pred
         response = run_constraints(to_predict_list)
         #return the result

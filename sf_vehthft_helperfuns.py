@@ -14,7 +14,7 @@ def get_dow(x):
 
 def get_fdow(x):
     dt = datetime.strptime(x, '%Y-%m-%d %H:%M:%S')
-    return calendar.day_name[dt.weekday() + 1]
+    return calendar.day_name[0 if dt.weekday() == 6 else dt.weekday() + 1]
 
 
 #create function to get hour from the datetime
