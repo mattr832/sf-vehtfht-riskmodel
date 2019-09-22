@@ -2,6 +2,8 @@
 import os
 import json
 import datetime
+from pytz import timezone
+import pytz
 import flask
 from flask import Flask, render_template, request, jsonify
 from sf_vehthft_utils import *
@@ -22,6 +24,7 @@ def result():
     if request.method == 'POST':
         #get current datetime from POST request
         currentDT = datetime.now().replace(microsecond=0)
+        currentDT = currentDT.astimezone(timezone('US/Pacific'))
         cdt = str(currentDT)
         #get paramters from URL request
         lat = float(request.args.get('Latitude'))
