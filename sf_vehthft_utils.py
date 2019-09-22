@@ -6,7 +6,7 @@ import scipy.stats as ss
 from sf_vehthft_helperfuns import *
 
 
-def get_risk(sample):
+def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn):
     # extract time related features for model
     datetime = sample['Time']
     hour = get_hour(sample['Time'])
@@ -18,18 +18,6 @@ def get_risk(sample):
     # get coordinates from json and convert to df for feeding to model
     df = pd.DataFrame(sample, index=[0])
     df = df[['Latitude','Longitude']]
-  
-    # load the label encoders from disk
-    pdistrict_labenc = pickle.load(open('pdistrict_labenc.pkl', 'rb'))
-    sdistrict_labenc = pickle.load(open('sdistrict_labenc.pkl', 'rb'))
-    hood_labenc = pickle.load(open('hood_labenc.pkl', 'rb'))
-    inter_labenc = pickle.load(open('inter_labenc.pkl', 'rb'))
-
-    # load the preprocessing models from disk
-    pdistrict_knn = pickle.load(open('pdistrict_knn.pkl', 'rb'))
-    sdistrict_lgbm = pickle.load(open('sdistrict_lgbm.pkl', 'rb'))
-    hood_knn = pickle.load(open('hood_knn.pkl', 'rb'))
-    inter_knn = pickle.load(open('inter_knn.pkl', 'rb'))
 
     # get preprocess predictions
     pdresult = pdistrict_knn.predict(df)
@@ -137,3 +125,10 @@ def get_risk(sample):
               }
     return response
 
+def run_constraints(jsondata, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn):
+    if check_lat(jsondata['Latitude']) == 0:
+        return {'Latitude Error': '''Bro, you're not parked in San Fran'''}
+    elif check_long(jsondata['Longitude']) == 0:
+        return {'Longitude Error': '''Bro, you're not parked in San Fran'''}
+    else: 
+        return get_risk(jsondata, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn)

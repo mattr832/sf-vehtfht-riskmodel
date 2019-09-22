@@ -1,6 +1,7 @@
 #importing libraries
 import os
 import json
+import pickle
 import datetime
 from pytz import timezone
 import pytz
@@ -11,13 +12,18 @@ from sf_vehthft_utils import *
 #creating instance of the class
 app=flask.Flask(__name__)
 
-def run_constraints(jsondata):
-    if check_lat(jsondata['Latitude']) == 0:
-        return {'Latitude Error': '''Bro, you're not parked in San Fran'''}
-    elif check_long(jsondata['Longitude']) == 0:
-        return {'Longitude Error': '''Bro, you're not parked in San Fran'''}
-    else: 
-        return get_risk(jsondata)
+
+# load the label encoders from disk
+pdistrict_labenc = pickle.load(open('pdistrict_labenc.pkl', 'rb'))
+sdistrict_labenc = pickle.load(open('sdistrict_labenc.pkl', 'rb'))
+hood_labenc = pickle.load(open('hood_labenc.pkl', 'rb'))
+inter_labenc = pickle.load(open('inter_labenc.pkl', 'rb'))
+
+# load the preprocessing models from disk
+pdistrict_knn = pickle.load(open('pdistrict_knn.pkl', 'rb'))
+sdistrict_lgbm = pickle.load(open('sdistrict_lgbm.pkl', 'rb'))
+hood_knn = pickle.load(open('hood_knn.pkl', 'rb'))
+inter_knn = pickle.load(open('inter_knn.pkl', 'rb'))
     
 @app.route('/',methods = ['POST'])
 def result():
@@ -33,7 +39,7 @@ def result():
         #create dictionary
         to_predict_list = {'Latitude': lat, 'Longitude': long, 'Time': cdt}
         #run lat long checks, return message if they fail, else get pred
-        response = run_constraints(to_predict_list)
+        response = run_constraints(to_predict_list, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn)
         #return the result
         return jsonify(response)
     
