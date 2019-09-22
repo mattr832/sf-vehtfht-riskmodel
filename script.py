@@ -26,6 +26,7 @@ def result():
         currentDT = datetime.now(tz=pytz.utc).replace(microsecond=0)
         currentDT = currentDT.astimezone(timezone('US/Pacific'))
         cdt = str(currentDT)
+        cdt = cdt[:19]
         #get paramters from URL request
         lat = float(request.args.get('Latitude'))
         long = float(request.args.get('Longitude'))
