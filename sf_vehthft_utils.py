@@ -6,7 +6,7 @@ import scipy.stats as ss
 from sf_vehthft_helperfuns import *
 
 
-def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn):
+def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn, vthft_model):
     # extract time related features for model
     datetime = sample['Time']
     hour = get_hour(sample['Time'])
@@ -33,9 +33,9 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
 
     # get mappings from dics in helper_funs
     isection = inter[0]
-    isection_te = inter_te.get(isection)
-    nvt_te = NVT_TE.get(isection)
-    burg_te = burglary_te.get(isection)
+    isection_te = inter_te.get(isection, 0.2229)
+    nvt_te = NVT_TE.get(isection, 0.1013)
+    burg_te = burglary_te.get(isection, 0.0537)
 
     # convert all preprocess features to df
     df = pd.DataFrame({'Incident_Hour': hour,
@@ -54,7 +54,6 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
         df2[catvars] = df2[catvars].astype('category')
 
     # score the df row
-    vthft_model = pickle.load(open('vthft_model.pkl', 'rb'))
     prob = vthft_model.predict_proba(df2)[:,1]
     score = round(ss.percentileofscore(list(probs), prob, kind='strict'))
 
@@ -125,10 +124,10 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
               }
     return response
 
-def run_constraints(jsondata, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn):
+def run_constraints(jsondata, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn, vthft_model):
     if check_lat(jsondata['Latitude']) == 0:
         return {'Latitude Error': '''Bro, you're not parked in San Fran'''}
     elif check_long(jsondata['Longitude']) == 0:
         return {'Longitude Error': '''Bro, you're not parked in San Fran'''}
     else: 
-        return get_risk(jsondata, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn)
+        return get_risk(jsondata, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn, vthft_model)

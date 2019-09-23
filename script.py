@@ -24,6 +24,9 @@ pdistrict_knn = pickle.load(open('pdistrict_knn.pkl', 'rb'))
 sdistrict_lgbm = pickle.load(open('sdistrict_lgbm.pkl', 'rb'))
 hood_knn = pickle.load(open('hood_knn.pkl', 'rb'))
 inter_knn = pickle.load(open('inter_knn.pkl', 'rb'))
+
+# load the final model from disk
+vthft_model = pickle.load(open('vthft_model.pkl', 'rb'))
     
 @app.route('/',methods = ['POST'])
 def result():
@@ -39,7 +42,7 @@ def result():
         #create dictionary
         to_predict_list = {'Latitude': lat, 'Longitude': long, 'Time': cdt}
         #run lat long checks, return message if they fail, else get pred
-        response = run_constraints(to_predict_list, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn)
+        response = run_constraints(to_predict_list, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn, vthft_model)
         #return the result
         return jsonify(response)
     
