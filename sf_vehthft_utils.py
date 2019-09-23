@@ -121,7 +121,7 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
                'Longitude': long,
                'Neighborhood': hood[0],
                'Intersection':  inter[0],
-               'Police_District': pdistrict
+               'Police_District': pdistrict[0]
               }
     return response
 
