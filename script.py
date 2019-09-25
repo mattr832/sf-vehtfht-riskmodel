@@ -47,7 +47,7 @@ def result():
         #jsonify the response
         jresponse = jsonify(response)
         #insert the response into the mongodb collection
-        col.insert_one(jresponse)
+        col.insert_one(response)
         #enable for javascript ajax and return the response
         jresponse.headers.add('Access-Control-Allow-Origin', '*')
         return jresponse
