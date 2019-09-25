@@ -6,8 +6,9 @@ import datetime
 from pytz import timezone
 import pytz
 import flask
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify
 from sf_vehthft_utils import *
+from sf_mongodb_store import MongoClient, db, col
 
 #creating instance of the class
 app=flask.Flask(__name__)
@@ -43,8 +44,11 @@ def result():
         to_predict_list = {'Latitude': lat, 'Longitude': long, 'Time': cdt}
         #run lat long checks, return message if they fail, else get pred
         response = run_constraints(to_predict_list, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn, vthft_model)
-        #return the result
+        #jsonify the response
         jresponse = jsonify(response)
+        #insert the response into the mongodb collection
+        col.insert_one(jresponse)
+        #enable for javascript ajax and return the response
         jresponse.headers.add('Access-Control-Allow-Origin', '*')
         return jresponse
     
