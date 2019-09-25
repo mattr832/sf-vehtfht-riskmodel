@@ -44,7 +44,9 @@ def result():
         #run lat long checks, return message if they fail, else get pred
         response = run_constraints(to_predict_list, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labenc, pdistrict_knn, sdistrict_lgbm, hood_knn, inter_knn, vthft_model)
         #return the result
-        return jsonify(response)
+        jresponse = jsonify(response)
+        jresponse.headers.add('Access-Control-Allow-Origin', '*')
+        return jresponse
     
 # Start the server, continuously listen to requests.
 if __name__=="__main__":
