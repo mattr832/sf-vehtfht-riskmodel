@@ -112,16 +112,16 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
     else:
         x2 = 'Very Low'
         
-    response = {'Risk Score': score, 
-               'Risk Level': x,
-               '3+ Hour Risk Score': score2,
-               '3+ Hour Risk Level': x2,
-               'DateTime': datetime,
-               'Latitude': lat,
-               'Longitude': long,
-               'Neighborhood': hood[0],
-               'Intersection':  inter[0],
-               'Police_District': pdistrict[0]
+    response = {'risk_score': score, 
+               'risk_level': x,
+               '3hour_risk_score': score2,
+               '3hour_risk_level': x2,
+               'datetime': datetime,
+               'latitude': lat,
+               'longitude': long,
+               'neighborhood': hood[0],
+               'intersection':  inter[0],
+               'police_district': pdistrict[0]
               }
     return response
 
