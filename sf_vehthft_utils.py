@@ -70,58 +70,65 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
         x = 'Very Low'
 
      # convert all preprocess features to df for 3 hour advance risk score
-    hour2 = hour + 3
-    if hour2 > 23:
-        newhour = hour2 - 24
-    else:
-        newhour = hour2
-    
-    if hour2 > 23:
-        day = fdayoweek
-    else:
-        day = dayoweek
-    
-    df3 = pd.DataFrame({'Incident_Hour': newhour,
-                 'Incident_Day_of_Week': day,
-                 'Police_District': pdistrict,
-                 'Analysis_Neighborhood': hood,
-                 'Supervisor_District': sdistrict,
-                 'Inter_TE': isection_te,
-                 'NVT_TE': nvt_te,
-                 'Burglary_TE': burg_te})
+    riskbyhour = {'data': []}
 
-    # one hot encode the categorical features
-    df4 = pd.DataFrame(df3)
-    
-    for c in catvars:
-        df4[catvars] = df4[catvars].astype('category')
+    for i in np.arange(1,24,1): 
+        hour2 = hour + i
+        if hour2 > 23:
+            newhour = hour2 - 24
+        else:
+            newhour = hour2
 
-    # score the df row
-    prob2 = vthft_model.predict_proba(df4)[:,1]
-    score2 = round(ss.percentileofscore(list(probs), prob2, kind='strict'))
+        if hour2 > 23:
+            day = fdayoweek
+        else:
+            day = dayoweek
 
-    # classify the risk score into risk levels based on quartile cutoff vals
-    if score2 > 80:
-        x2 = 'Very High'
-    elif score2 > 60 and score2 <= 80:
-        x2 = 'High'
-    elif score2 > 40 and score2 <= 60:
-        x2 = 'Medium'
-    elif score2 > 20 and score2 <= 40:
-        x2 = 'Low'
-    else:
-        x2 = 'Very Low'
+        df3 = pd.DataFrame({'Incident_Hour': newhour,
+                    'Incident_Day_of_Week': day,
+                    'Police_District': pdistrict,
+                    'Analysis_Neighborhood': hood,
+                    'Supervisor_District': sdistrict,
+                    'Inter_TE': isection_te,
+                    'NVT_TE': nvt_te,
+                    'Burglary_TE': burg_te})
+
+        # one hot encode the categorical features
+        df4 = pd.DataFrame(df3)
+
+        for c in catvars:
+            df4[catvars] = df4[catvars].astype('category')
+
+        # score the df row
+        prob2 = vthft_model.predict_proba(df4)[:,1]
+        score2 = round(ss.percentileofscore(list(probs), prob2, kind='strict'))
+
+        # classify the risk score into risk levels based on quartile cutoff vals
+        if score2 > 80:
+            x2 = 'Very High'
+        elif score2 > 60 and score2 <= 80:
+            x2 = 'High'
+        elif score2 > 40 and score2 <= 60:
+            x2 = 'Medium'
+        elif score2 > 20 and score2 <= 40:
+            x2 = 'Low'
+        else:
+            x2 = 'Very Low'
+
+        newdata = {'day': day, 'hour': int(newhour), 'risk_score': score2, 'risk_level': x2}
+        riskbyhour['data'].append(newdata)
         
     response = {'risk_score': score, 
                'risk_level': x,
-               '3hour_risk_score': score2,
-               '3hour_risk_level': x2,
+            #    '3hour_risk_score': score2,
+            #    '3hour_risk_level': x2,
                'datetime': datetime,
                'latitude': lat,
                'longitude': long,
                'neighborhood': hood[0],
                'intersection':  inter[0],
-               'police_district': pdistrict[0]
+               'police_district': pdistrict[0],
+               'riskbyhour': riskbyhour
               }
     return response
 
