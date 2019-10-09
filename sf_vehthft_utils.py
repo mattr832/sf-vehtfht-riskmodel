@@ -38,41 +38,41 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
     burg_te = burglary_te.get(isection, 0.0537)
 
     # convert all preprocess features to df
-    df = pd.DataFrame({'Incident_Hour': hour,
-                 'Incident_Day_of_Week': dayoweek,
-                 'Police_District': pdistrict,
-                 'Analysis_Neighborhood': hood,
-                 'Supervisor_District': sdistrict,
-                 'Inter_TE': isection_te,
-                 'NVT_TE': nvt_te,
-                 'Burglary_TE': burg_te})
+    # df = pd.DataFrame({'Incident_Hour': hour,
+    #              'Incident_Day_of_Week': dayoweek,
+    #              'Police_District': pdistrict,
+    #              'Analysis_Neighborhood': hood,
+    #              'Supervisor_District': sdistrict,
+    #              'Inter_TE': isection_te,
+    #              'NVT_TE': nvt_te,
+    #              'Burglary_TE': burg_te})
 
-    # one hot encode the categorical features
-    df2 = pd.DataFrame(df)
+    # # one hot encode the categorical features
+    # df2 = pd.DataFrame(df)
     
-    for c in catvars:
-        df2[catvars] = df2[catvars].astype('category')
+    # for c in catvars:
+    #     df2[catvars] = df2[catvars].astype('category')
 
-    # score the df row
-    prob = vthft_model.predict_proba(df2)[:,1]
-    score = round(ss.percentileofscore(list(probs), prob, kind='strict'))
+    # # score the df row
+    # prob = vthft_model.predict_proba(df2)[:,1]
+    # score = round(ss.percentileofscore(list(probs), prob, kind='strict'))
 
-    # classify the risk score into risk levels based on quartile cutoff vals
-    if score > 80:
-        x = 'Very High'
-    elif score > 60 and score <= 80:
-        x = 'High'
-    elif score > 40 and score <= 60:
-        x = 'Medium'
-    elif score > 20 and score <= 40:
-        x = 'Low'
-    else:
-        x = 'Very Low'
+    # # classify the risk score into risk levels based on quartile cutoff vals
+    # if score > 80:
+    #     x = 'Very High'
+    # elif score > 60 and score <= 80:
+    #     x = 'High'
+    # elif score > 40 and score <= 60:
+    #     x = 'Medium'
+    # elif score > 20 and score <= 40:
+    #     x = 'Low'
+    # else:
+    #     x = 'Very Low'
 
      # convert all preprocess features to df for 3 hour advance risk score
     riskbyhour = {'data': []}
 
-    for i in np.arange(1,24,1): 
+    for i in np.arange(0,24,2): 
         hour2 = hour + i
         if hour2 > 23:
             newhour = hour2 - 24
@@ -118,8 +118,9 @@ def get_risk(sample, pdistrict_labenc, sdistrict_labenc, hood_labenc, inter_labe
         newdata = {'day': day, 'hour': int(newhour), 'risk_score': score2, 'risk_level': x2}
         riskbyhour['data'].append(newdata)
         
-    response = {'risk_score': score, 
-               'risk_level': x,
+    response = {
+            #    'risk_score': score, 
+            #    'risk_level': x,
             #    '3hour_risk_score': score2,
             #    '3hour_risk_level': x2,
                'datetime': datetime,
